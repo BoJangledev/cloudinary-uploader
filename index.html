@@ -7,12 +7,13 @@
     <button id="upload_widget">Upload Image</button>
     <script type="text/javascript">
       var myWidget = cloudinary.createUploadWidget({
-        cloudName: 'YOUR_CLOUD_NAME',
-        uploadPreset: 'YOUR_UPLOAD_PRESET'
+        cloudName: 'dg3xhjyeh',
+        uploadPreset: 'your_unsigned_preset'
       }, (error, result) => {
         if (!error && result && result.event === "success") {
-          alert("Upload successful! Public ID: " + result.info.public_id);
-          // Optionally redirect to Glide with a query param
+          const publicId = result.info.public_id;
+          const redirectUrl = `https://your-glide-app-url.com?public_id=${publicId}`;
+          window.location.href = redirectUrl;
         }
       });
 
