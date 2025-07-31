@@ -1,27 +1,93 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
-  </head>
-  <body>
-    <button id="upload_widget">Upload Image</button>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Upload Your Creative | Mock Media</title>
+  <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+      background-color: #f9f9f9;
+    }
 
-    <script type="text/javascript">
-      const myWidget = cloudinary.createUploadWidget({
-        cloudName: 'dg3xhjyeh', 
-        uploadPreset: 'glide_uploader'
-      }, (error, result) => {
-        if (!error && result && result.event === "success") {
-          const publicId = result.info.public_id;
+    h1 {
+      color: #222;
+    }
 
-          // 👇 Redirect to your Glide app with public_id as query param
-          window.location.href = `https://mockmedia.glide.page/?public_id=${encodeURIComponent(publicId)}`;
-        }
-      });
+    #upload_widget {
+      background-color: #008CBA;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
 
-      document.getElementById("upload_widget").addEventListener("click", function () {
-        myWidget.open();
-      }, false);
-    </script>
-  </body>
+    #result {
+      margin-top: 30px;
+    }
+
+    input.copy-box {
+      width: 100%;
+      max-width: 500px;
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    .instructions {
+      max-width: 600px;
+      margin: 20px auto;
+      text-align: left;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Upload Your Creative</h1>
+  <p>Welcome to <strong>Mock Media</strong>. Use the button below to upload your ad creative. When it's done, copy the code and paste it into the app to generate your mockup.</p>
+
+  <button id="upload_widget">Upload Image</button>
+
+  <div id="result" style="display:none;">
+    <h3>Upload Successful!</h3>
+    <p>Copy this code and paste it into Mock Media:</p>
+    <input id="public_id_output" class="copy-box" readonly />
+  </div>
+
+  <div class="instructions">
+    <h4>Next Steps</h4>
+    <ol>
+      <li>Click the <strong>Upload Image</strong> button.</li>
+      <li>Select your creative (JPG or PNG).</li>
+      <li>When upload is finished, a code will appear in the box above.</li>
+      <li><strong>Copy that code</strong> into the “Public ID” field in the app.</li>
+    </ol>
+    <p>Example of a Public ID: <code>mock_creatives/ad_sample_123</code></p>
+  </div>
+
+  <script type="text/javascript">
+    const myWidget = cloudinary.createUploadWidget({
+      cloudName: 'dg3xhjyeh',  
+      uploadPreset: 'glide_uploader'  
+    }, (error, result) => {
+      if (!error && result && result.event === "success") {
+        const publicId = result.info.public_id;
+        const output = document.getElementById("public_id_output");
+        output.value = publicId;
+        document.getElementById("result").style.display = "block";
+      }
+    });
+
+    document.getElementById("upload_widget").addEventListener("click", function () {
+      myWidget.open();
+    }, false);
+  </script>
+</body>
 </html>
