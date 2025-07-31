@@ -28,6 +28,7 @@
 
     #result {
       margin-top: 30px;
+      display: none;
     }
 
     input.copy-box {
@@ -35,6 +36,13 @@
       max-width: 500px;
       padding: 10px;
       font-size: 16px;
+      margin-top: 10px;
+    }
+
+    .copied-msg {
+      color: green;
+      font-weight: bold;
+      margin-top: 10px;
     }
 
     .instructions {
@@ -51,14 +59,15 @@
 
 <body>
   <h1>Upload Your Creative</h1>
-  <p>Welcome to <strong>Mock Media</strong>. Use the button below to upload your ad creative. When it's done, copy the code and paste it into the app to generate your mockup.</p>
+  <p>Welcome to <strong>Mock Media</strong>. Upload your ad creative below. Your code will be copied automatically after the upload completes.</p>
 
   <button id="upload_widget">Upload Image</button>
 
-  <div id="result" style="display:none;">
+  <div id="result">
     <h3>Upload Successful!</h3>
-    <p>Copy this code and paste it into Mock Media:</p>
+    <p>We've copied your Public ID to your clipboard. Paste it into Mock Media to generate your mockup:</p>
     <input id="public_id_output" class="copy-box" readonly />
+    <div class="copied-msg" id="copied_msg">✅ Copied to clipboard!</div>
   </div>
 
   <div class="instructions">
@@ -66,22 +75,32 @@
     <ol>
       <li>Click the <strong>Upload Image</strong> button.</li>
       <li>Select your creative (JPG or PNG).</li>
-      <li>When upload is finished, a code will appear in the box above.</li>
-      <li><strong>Copy that code</strong> into the “Public ID” field in the app.</li>
+      <li>Wait for the upload to complete — we'll copy your Public ID for you.</li>
+      <li>Paste that ID into the “Public ID” field in the app.</li>
     </ol>
     <p>Example of a Public ID: <code>mock_creatives/ad_sample_123</code></p>
   </div>
 
   <script type="text/javascript">
     const myWidget = cloudinary.createUploadWidget({
-      cloudName: 'dg3xhjyeh',  
-      uploadPreset: 'glide_uploader'  
+      cloudName: 'dg3xhjyeh',
+      uploadPreset: 'glide_uploader' 
     }, (error, result) => {
       if (!error && result && result.event === "success") {
         const publicId = result.info.public_id;
         const output = document.getElementById("public_id_output");
+        const copiedMsg = document.getElementById("copied_msg");
+
         output.value = publicId;
         document.getElementById("result").style.display = "block";
+
+        // Automatically copy to clipboard
+        navigator.clipboard.writeText(publicId).then(() => {
+          copiedMsg.style.display = 'block';
+        }).catch(err => {
+          copiedMsg.textContent = '⚠️ Failed to copy.';
+          copiedMsg.style.color = 'red';
+        });
       }
     });
 
